@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <fstream>
 #include <string>
+#include <Windows.h> 
 
 class Address {
 private:
@@ -21,27 +22,37 @@ public:
 };
 
 int main() {
+    SetConsoleCP(1251);
+    SetConsoleOutputCP(1251);
+
     std::ifstream inputFile("in.txt");
     std::ofstream outputFile("out.txt");
 
-    int n;
-    inputFile >> n;
+    if (inputFile.is_open()) {
 
-    Address* addresses = new Address[n];
+        int n;
+        inputFile >> n;
 
-    for (int i = 0; i < n; i++) {
-        std::string city, street;
-        int houseNumber, apartmentNumber;
-        inputFile >> city >> street >> houseNumber >> apartmentNumber;
-        addresses[i] = Address(city, street, houseNumber, apartmentNumber);
+        Address* addresses = new Address[n];
+
+        for (int i = 0; i < n; i++) {
+            std::string city, street;
+            int houseNumber, apartmentNumber;
+            inputFile >> city >> street >> houseNumber >> apartmentNumber;
+            addresses[i] = Address(city, street, houseNumber, apartmentNumber);
+        }
+
+        outputFile << n << "\n";
+        for (int i = n - 1; i >= 0; i--) {
+            outputFile << addresses[i].getOutputAddress() << "\n";
+        }
+
+        inputFile.close();
+        delete[] addresses;
     }
-
-    outputFile << n << "\n";
-    for (int i = n - 1; i >= 0; i--) {
-        outputFile << addresses[i].getOutputAddress() << "\n";
+    else
+    {
+        std::cout << "Файл не открыт.";
     }
-
-    delete[] addresses;
-
     return 0;
 }
